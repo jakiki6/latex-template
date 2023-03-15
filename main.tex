@@ -4,11 +4,10 @@
 \usepackage[utf8]{inputenc}
 \usepackage{gensymb}
 \usepackage{blindtext}
+\usepackage{bibgerm}
 \usepackage{geometry}
 \usepackage{fancyhdr}
 \usepackage{url}
-\usepackage{seqsplit}
-\usepackage{hyperref}
 
 \graphicspath{{images/}}
 \setlength{\parindent}{0cm}
@@ -16,27 +15,81 @@
 \geometry{letterpaper, margin=1in}
 \pagestyle{fancy}
 
-\lhead{Jakob Kirsch}
 \rhead{\includegraphics[width=3cm]{logo}}
 
-% \title{}
-% \author{Jakob Kirsch}
-% \date{\parbox{\linewidth}{\centering%
-%   \today\endgraf\bigskip
-%   Fach: \endgraf\medskip
-%   Betreuer: \endgraf\medskip
-%}}
+\title{Das CPU-Design}
+\author{Jakob Kirsch}
+\date{\parbox{\linewidth}{\centering%
+  \today\endgraf\bigskip
+  Fach: Informationsverarbeitung\endgraf\medskip
+  Betreuer: Mathis Maier\endgraf\medskip
+}}
 
 \begin{document}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
 
-% \maketitle
-% \newpage
-% \tableofcontents
-% \newpage
+\section{Mikroarchitektur der CPU}
 
-\blindtext
+Prinzipiell ist die CPU das ``Gehirn'' eines Systems. Sie hat freien Zugriff auf den RAM, das ``Gedächniss'' des Systems. Zudem beherbergt sie eine Reihe an Registern, welche eine Art kurzzeitigen Speicher darstellen, wie z.B. die eigenen Hände, mit denen man eine Menge abzählen kann.
 
-% \newpage
-% \bibliography{refs}
+Eines dieser Register ist der sogenannte Program Counter (oder auch kurz: PC). Abhängig von der Architektur der CPU, praktisch die ``Sprache'' der CPU, wird dieser auch IP (instruction pointer) genannt \cite{x86-rip}. Dieser zeigt auf die aktuelle Anweisung (engl.: instruction) im RAM, welche ausgeführt werden soll.
+Grundlegend durchläuft die CPU während der Ausführung einer Anweisung 3 Phasen. Die erste Phase wird im Englischen ``fetch'' genannt und besteht darin, die Anweisung aus dem RAM zu lesen, da dieser in der Regel außerhalb der CPU liegt und eine gewisse Latenz hat. Die nächste Phase wird ``decode'' genannt und besteht aus dem dekodieren der gerade geladenen Anweisung, damit diese in der 3ten Phase, auch genannt ``execute'', ausgeführt werden kann. Danach erhöht die CPU den Program Counter um die Anzahl an Bytes, die es in der ersten Phase gelesen hat, und fängt wieder mit dieser an.
+
+Dieser ganze Zyklus korrespondiert bei manchen einfachen Anweisungen zu der Länge eines Taktes, mit dem die CPU betrieben wird. Bei komplexeren Anweisungen kann ein Zyklus aber auch hunderte oder tausende and Takten brauchen, da sie sehr viele Dinge auf einmal machen. Ein Beispiel dafür wäre die Anweisung \textit{rdseed} auf x86 CPUs, welche auf meine Computer 1000 Takte braucht (siehe code/test\_rdseed.c).
+
+\section{Techniken}
+
+\subsection{Pipeline}\cite{wiki-pipeline}
+Eine sehr einfache und auch weit genutzte Optimierung besteht darin, dass die einzelnen Phasen nicht miteinander interagieren, solange die CPU nicht den Teil vom RAM beschreibt, den sie gerade ausführt. Deswegen kann man während dem Dekodieren schon den nächsten Fetch starten, da die Einheit dafür gerade ungenutzt ist. Dieses Konzept nennt sich Pipeline und wird in fast jeder modernen CPU genutzt\cite{i486-pipeline}
+
+\subsection{Superscalar}\cite{wiki-superscalar}
+Eine weitere Optimierung nutzt den Fakt aus, dass mehrere Anweisung nicht unbedingt die selben Teile der CPU zur selben Zeit nutzten, wodurch es möglich ist, mehrere Anweisungen pro Cycle auszuführen. Zudem ist es möglich, mehrere Einheiten des selben Typs zu haben, wodurch z.B. zwei Additionen gleichzeitig stattfinden können.
+
+\subsection{Cache}\cite{wiki-cache}
+So schnell auch unsere Computer heutzutage sind, unser RAM ist langsam aus der Sicht der CPU. So kann es sein, dass ein Zugriff auf den RAM 5000 Takte oder mehr braucht. Man muss immerhin bedenken, dass sich ein Elektron bei einem Takt von 3 Gigahertz gerade einmal 10 Zentimeter bewegen kann, bis der nächste Takt anfängt.
+Auch dafür gibt es eine elegante Lösung, nähmlich Caching. Wenn ein Programm auf die selbe Stelle im RAM immer wieder zugreift, kann man sehr viel Zeit sparen, indem man diesen Wert zwischenspeichert. Genau das machen CPUs mit Caches, wobei diese transparent in der Hardware betrieben werden und der Programmierer im Normalfall nichts bemerken sollte, außer, dass der Code schneller läuft. Es gibt mehrere Levels and Caches, abhängig von der Distanz zur CPU. Diese sind ganz kreativ benannt: L1, L2, L3 und manchmal auch L4. Je höher die Zahl, desto weiter entfernt ist der Cache und desto größer ist er.
+
+\subsection{Branch Prediction und spekulative Ausführung}\cite{wiki-branchpred}
+Eine weiter Optimierung ist die sogenannte Branch Prediction. In Programmen gibt es häufig die Konstruktion ``Wenn A wahr ist, mach B, sonst mach C''. Also gibt es eine Verzweigung beim dem ``Wenn A wahr ist'', da es zwei Wege gibt, die ausgeführt werden können: A und B. In der Sprache der CPUs gibt es sogenannte Konditionelle Verzweigungen (conditional branches), die wie folgt definiert werden: ``Wenn A wahr ist, ändere den Program Counter zu B und mache da weiter, sonst mache nichts''. Die Idee von Branch Prediction, wie der Name es schon sagt, besteht darin, den Ausgang dieser Verzweigung vorherzusagen.
+
+Dazu gibt es verschiedene Techniken:
+\begin{itemize}
+  \item \textbf{Static branch prediction} Man nimmt an, dass der Branch immer genommen wird oder nie genommen wird
+  \item \textbf{Random branch prediction} Man wählt immer durch Zufall eine der beiden Optionen
+  \item \textbf{Dynamic branch prediction} Man nimmt an, dass der Branch ähnlich ausgehen wird, wie er in der letzen Zeit ausgegangen ist
+\end{itemize}
+
+Alle Techniken haben ihre Vor- und Nachteile aber fast alle modernen CPUs nutzten die dynamische Variante, da diese momentan die besten Ergebnisse erziehlt.
+
+Die Vorhersage kann genutzt werden, um die Pipeline weiter zu befüllen, oder auch, um spekulativ den weiteren Verlauf auszuführen, während vorherige Anweisung noch ausgeführt werden. Eine extreme Variante davon ist die Eager execution, bei der beide Zweige ausgeführt werden und der falsche verworfen wird.
+
+\subsection{Out-of-order Execution}\cite{wiki-oooe}
+Sehen wir uns das folgende Beispiel an:
+\begin{enumerate}
+  \item Lade den Wert von Adresse 0 in das Register R0
+  \item Addiere 4 zu dem Wert in Register R0 und schreibe den Wert in Register R0
+  \item Addiere 2 zu dem Wert in Register R1 und schreibe den Wert in Register R2
+\end{enumerate}
+
+Wenn man den Code sequenziell auführt, wartet man bei Schritt 1 sehr lange auf den RAM und verschwended wertvolle Takte. Aber was hält einen davon ab, Schritt 3 als zweites auszuführen, da dieser nicht mit Schritt 1 und 2 interagiert und Schritt 1 und 2 auf den RAM warten. Wenn man es richtig macht, kann man so die Geschwindigkeit des Codes signifikant erhöhen, was die Idee von Out-of-order Execution ist.
+
+\subsection{RISC vs CISC}\cite{wiki-isa}
+Eine Debatte, die schon so alt ist wie die CPU selbst, ist die um das Design der Instruction Set Architecture (kurz: ISA), praktisch die ``Sprache'', die die CPU versteht. Das entscheidenste Merkmal dabei ist RISC vs CISC.
+
+RISC steht für Reduced Instruction Set Computer. Die Idee ist es, möglichst wenige und einheitliche Anweisungen zu haben, damit die CPU kleiner und effizienter und auch z.T. schneller ist. Ein sehr makantes Merkmal ist, dass die Länge einer Anweisung meistens konstant ist (z.B. 32 Bits oder 4 Bytes). Zudem ist der Zugriff auf den RAM meist nur mit gesonderten expliziten Anweisungen möglich. Ein paar Beispiele hierfür sind ARM\cite{arm-isa} oder auch RISC-V\cite{riscv-isa}.
+
+Außerhalb des PC-Marktes ist ARM am dominantesten, da z.B. fast alle Android-Geräte und alle iPhones mit einer ARM-CPU laufen. RISC-V hingegen ist noch sehr jung und gerade auf dem Weg, ARM zu ersetzen.
+
+CISC hingegen steht für Complex Instruction Set Computer. Statt wenige gleichlange Anweisungen zu haben, gibt es variable lange sehr komplexe Anweisungen. Aus \textit{ld (r0), 4; add r0, 3; st (4), r0} wird dann \textit{add (4), 3}. Während das vielleicht bequem für den Programmierer ist, ist es entsprechend unbequem für die Hardware, weswegen alle neuen Designs RISC sind. Ein bekanntes Beispiel für CISC ist x86.
+
+x86 ist im PC-Markt dominant, wobei es nur 2 große Hersteller gibt: AMD und Intel. x86 hat 3684 Anweisungen\cite{x86-instcount}, während RVI32 z.B. nur 47 hat\cite{riscv-isa}. Entsprechend komplex ist auch die Implementation. So kompiliert \textit{inc eax} zu \textit{40} während \textit{lwpins rax, [fs:eax+ebx+2147483647], 2147483647} zu \textit{64678feaf81284187fffffff7fffffff} kompiliert.
+
+ARM ist eine Mischung von RISC und CISC. Während alle Anweisungen 4 Bytes lang sind, hat ARMv8 1266 Anweisungen\cite{armv8-instcount}. Ein fataler Fehler von ARM war es, den PC als Register beschreibbar zu machen, was die Branch Prediction sehr erschwert, da fast jede Anweisung ein Branch sein kann. Ein Beispiel dafür wäre \textit{ldmiaeq SP!, {R4-R7, PC}} also ``load multiple from address SP into R4, R5, R6, R7 and PC on equal and increment SP''. Also 5 Leseoperationen, 6 Registerschreiboperationen und ein Branch, aber nur, wenn das EQ gesetzt ist.
+
+\newpage
+\bibliography{refs}
 
 \end{document}
