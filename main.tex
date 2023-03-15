@@ -9,6 +9,7 @@
 \usepackage{url}
 \usepackage{seqsplit}
 \usepackage{hyperref}
+\usepackage{listings}
 
 \graphicspath{{images/}}
 \setlength{\parindent}{0cm}
@@ -34,7 +35,57 @@
 % \tableofcontents
 % \newpage
 
-\blindtext
+\section{Hypothese}
+Die Geschwindigkeit eines Objekts bleibt ohne Fremdeinwirkung konstant.
+
+\section{Versuchsaufbau}
+Ein Objekt mit einer schwarzen Platte mit einer Länge von 10cm wird auf einer Stange angeschoben und durchquert 2 Lichtschranken. Diese sind mit 2 Uhren verbunden. Beide starten, wenn das Objekt die Lichtschranke blockiert. Die erste Uhr stoppt, sobald das Objekt 10cm weiter ist und die Lichtschranke nicht mehr blockiert. Die zweite Uhr stoppt, wenn das Objekt die zweite Lichtschranke blockiert. Die Distanz zwischen den Uhren beträgt genau 1m. Somit misst die erste Uhr die benötigte Zeit für 10cm und die zweite Uhr für 1m. Zudem wird die Stange permanent mit Luft befüllt und hat kleine Löcher, damit die Reibung mit dem Objekt möglichst gering ist, um das Ergebniss nicht zu verfälschen.
+
+\section{Werte und Abweichung}
+
+\begin{center}
+  \begin{tabular} { c|c|c|c|c }
+    t1(s) & t2(s) & v1(m/s) & v2(m/s) & Abweichung \\
+    \hline
+    0.363 & 3.594 & 0.275 & 0.278 & 1.085\% \\
+    0.255 & 2.551 & 0.392 & 0.392 & 0.0\% \\
+    0.237 & 2.368 & 0.422 & 0.422 & 0.0\% \\
+    0.177 & 1.766 & 0.565 & 0.566 & 0.177\% \\
+    0.115 & 1.153 & 0.87 & 0.867 & 0.345\% \\
+    0.144 & 1.44 & 0.694 & 0.694 & 0.0\% \\
+    0.094 & 1.872 & 1.064 & 0.534 & 66.333\% \\
+    0.189 & 1.876 & 0.529 & 0.533 & 0.753\% \\
+    0.036 & 1.689 & 2.778 & 0.592 & 129.733\% \\
+    0.181 & 1.804 & 0.552 & 0.554 & 0.362\%
+  \end{tabular}
+\end{center}
+
+Die Abweichung wurde nach langer Diskussion in der Stunde mit der Funktion \textit{abs(v1 - v2) / (0.5 * (v1 + v2))} beschrieben.
+
+\subsection{Vertrauenswürdigkeit}
+Alle Messergebnisse bis auf die mit 66.333\% und 129.733\% Abweichung scheinen vertrauenswürdig zu sein. Aufgrund meiner Beobachtung während des Experiments weiß ich, dass diese Werte verfälscht wurden, da das Versuchsobjekt berührt wurde, während es in der ersten Lichtschranke war. Wenn man diese 2 Werte ignoriert, sind alle Werte im vertrauenswürdigen Bereich.
+
+\section{Schlussfolgerung}
+Die Geschwindigkeit bleibt ohne Fremdeinwirkung konstant. Die These ist korrekt.
+
+\section{Hilfsmittel}
+Die Tabelle wurde mithilfe des folgenden Skripts in Python 3 erstellt:
+
+\tiny
+\begin{lstlisting}
+t1 = [0.363, 0.255, 0.237, 0.177, 0.115, 0.144, 0.094, 0.189, 0.036, 0.181]
+t2 = [3.594, 2.551, 2.368, 1.766, 1.153, 1.440, 1.872, 1.876, 1.689, 1.804]
+
+import math
+
+v1 = [round(0.1 / x, 3) for x in t1]
+v2 = [round(1.0 / x, 3) for x in t2]
+
+d = [abs(x - y) / (0.5 * (x + y)) for x, y in zip(v1, v2)]
+
+for i in range(0, len(t1)):
+    print(f"    {t1[i]} & {t2[i]} & {v1[i]} & {v2[i]} & {round(d[i] * 100, 3)}\\% \\\\")
+\end{lstlisting}
 
 % \newpage
 % \bibliography{refs}
