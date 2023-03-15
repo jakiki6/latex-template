@@ -5,14 +5,11 @@ view: main.pdf
 
 main.pdf: main.tex
 	pdflatex $<
-	# bibtex $(<:.tex=)
-	# pdflatex $<
-	# pdflatex $<
-	zip -l main.zip main.tex refs.bib gerplain.bst images/* code/* Makefile
+	zip -l main.zip main.tex images/* Makefile
 	pdfzip -p main.pdf -z main.zip main.pdf
 	rm main.zip
 
 clean:
-	rm -f *.log *.aux *.bbl *.blg *.toc *.pdf *.zip *.out
+	rm -f *.log *.aux *.pdf *.zip
 
 .PHONY: all view clean
