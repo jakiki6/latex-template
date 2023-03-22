@@ -9,6 +9,9 @@
 \usepackage{url}
 \usepackage{seqsplit}
 \usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{amsmath}
 
 \graphicspath{{images/}}
 \setlength{\parindent}{0cm}
@@ -34,7 +37,91 @@
 % \tableofcontents
 % \newpage
 
-\blindtext
+\section{Versuchsbeschreibung}
+Eine Metallkugel wird von einer bestimmten Höhe fallengelassen. Dabei wird die Zeit zwischen loslassen und dem Aufprall auf einer Platte gemessen. Die Form des Objektes wurde gewählt, um den Luftwiderstand möglichst gering zu halten.
+
+Der Versuch wurde für eine Höhe von 80cm, 40cm und 20cm jeweils 6 mal durchgeführt.
+
+\section{Messwerte}
+\begin{tabular} { c|c|c|c }
+  & t80 & t40 & t20 \\
+  \hline
+  & 0.404 & 0.283 & 0.2 \\
+  & 0.404 & 0.283 & 0.199 \\
+  & 0.405 & 0.274 & 0.195 \\
+  & 0.395 & 0.238 & 0.199 \\
+  & 0.404 & 0.292 & 0.196 \\
+  & 0.401 & 0.282 & 0.199 \\
+  & ===== & ===== & ===== \\
+  Mittelwert & 0.402 & 0.275 & 0.198 \\
+  Standardabweichung & 0.000012 & 0.000306 & 0.000003
+\end{tabular}
+
+\hfill \break
+
+\begin{tikzpicture}
+  \begin{axis}[
+    legend style={at={(1.1,0.5)},anchor=north west},
+    xlabel={Messung},
+    ylabel={Fallzeit (s)}
+  ]
+    \addplot[
+      color=red,
+      mark=square,
+    ] coordinates { (0,0.404)(1,0.404)(2,0.405)(3,0.395)(4,0.404)(5,0.401) };
+    \addplot[
+      color=green,
+      mark=square,
+    ] coordinates { (0,0.283)(1,0.283)(2,0.274)(3,0.238)(4,0.292)(5,0.282) };
+    \addplot[
+      color=blue,
+      mark=square,
+    ] coordinates { (0,0.2)(1,0.199)(2,0.195)(3,0.199)(4,0.196)(5,0.199) };
+
+    \addlegendentry{ Messwerte für 80cm }
+    \addlegendentry{ Messwerte für 40cm }
+    \addlegendentry{ Messwerte für 20cm }
+  \end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \begin{axis}[
+    xlabel={Falldistanz (cm)},
+    ylabel={Fallzeit (s)}
+  ]
+    \addplot[
+      color=yellow,
+      mark=square,
+    ] coordinates { (20,0.198)(40,0.275)(80,0.402) };
+  \end{axis}
+\end{tikzpicture}
+
+\section{Auswertung}
+Die Werte sind im vertrauenswürdigen Bereich, da ihre Standardabweichung verschwindent gering ist.
+Der zweite Graph ist etwas trügerich, da man bei Betrachtung der Werte vestellt, dass kein linearer Zusammenhang zwischen Falldistanz und Falldauer besteht.
+
+\section{Deutung}
+Unter der Annahme, dass die Funktion eine quadratische Funktion ist, kann man mithilfer der 3 gemessenen Punkte mit der folgenden Gleichung die Relation zwischen Falldistanz (Meter) und Falldauer (Sekunden) darstellen:
+\[ -0,1125x^{2} + 0.4525x + 0.112 \]
+
+Diese Formel stimmt mit weiteren Messwerten aus dem Internet nicht überein. Deshalb habe ich nach langem probieren die Idee bekommen, die Zeit zu quadrieren, da in vielen Formeln eine Wurzel vorhanden ist. Daraus ergibt sich die folgende Formel:
+\[ 0.05547475x^{2} + 0.149262x + 0.007162 \]
+
+Aufgrund des Luftwiderstandes und unserem Wertebereich kann man die Formel auf ungefähr $0.15x$ reduzieren, da $0.05547475 * 0.8 * 0.8 / 0.402 = 8.8\%$ ist und $0.007162 / 0.402 = 1.9\%$ ist.
+
+Somit wäre unsere Funktion:
+\[ t = \sqrt{0.15x} \]
+
+\subsection{Herleitung der eigentlichen Formel}
+Die gefallene Distanz $h$ ist die erste Integration der Geschwindigkeit nach $x$ Zeiteinheiten:
+\[ \int_{}^{}gx=\frac{1}{2}gx \]
+
+Wenn man diese nun nach $t$ umstellt, erhält man:
+
+\[ t = \sqrt{\frac{2x}{g}} = \sqrt{\frac{2x}{9.81}} = \sqrt{0.204x} \]
+
+\subsection{Fazit}
+Die große Abweichung lässt sich vermutlich auf Messungenauigkeiten oder den Luftwiderstand zurückführen. Man muss den Versuch mit mehr unterschiedlichen Falldistanzen und in einem Vakuum erneut durchführen.
 
 % \newpage
 % \bibliography{refs}
