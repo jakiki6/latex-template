@@ -102,23 +102,23 @@ Der zweite Graph ist etwas trügersich, da man bei Betrachtung der Werte festell
 
 \section{Deutung}
 Unter der Annahme, dass die Funktion eine quadratische Funktion ist, kann man mithilfer der 3 gemessenen Punkte mit der folgenden Gleichung die Relation zwischen Falldistanz (Meter) und Falldauer (Sekunden) darstellen:
-\[ -0,1125x^{2} + 0.4525x + 0.112 \]
+\[ t = -0,1125h^{2} + 0.4525h + 0.112 \]
 
 Diese Formel stimmt mit weiteren Messwerten aus dem Internet nicht überein. Deshalb habe ich nach langem probieren die Idee bekommen, die Zeit zu quadrieren, da in vielen Formeln eine Wurzel vorhanden ist. Daraus ergibt sich die folgende Formel:
-\[ 0.05547475x^{2} + 0.149262x + 0.007162 \]
+\[ t^{2} = 0.05547475h^{2} + 0.149262h + 0.007162 \]
 
-Aufgrund des Luftwiderstandes und unserem Wertebereich kann man die Formel auf ungefähr $0.15x$ reduzieren, da $0.05547475 * 0.8 * 0.8 / 0.402 = 8.8\%$ ist und $0.007162 / 0.402 = 1.9\%$ ist.
+Aufgrund des Luftwiderstandes und unserem Wertebereich kann man die Formel auf ungefähr $0.15h$ reduzieren, da $0.05547475 * 0.8 * 0.8 / 0.402 = 8.8\%$ ist und $0.007162 / 0.402 = 1.9\%$ ist.
 
 Somit wäre unsere Funktion:
-\[ t = \sqrt{0.15x} \]
+\[ t = \sqrt{0.15h} \]
 
 \subsection{Herleitung der eigentlichen Formel}
-Die gefallene Distanz $h$ ist die erste Integration der Geschwindigkeit nach $x$ Zeiteinheiten, da die Distanz die Summe aller Quotienten der Geschwindigkeiten von einem Punkt und der Anzahl der Punkte ist, wenn die Anzahl in Richtung Unendlich geht:
-\[ \int_{}^{}gx=\frac{1}{2}gx \]
+Die gefallene Distanz $h$ ist die erste Integration der Geschwindigkeit nach $t$ Zeiteinheiten, da die Distanz die Summe aller Quotienten der Geschwindigkeiten von einem Punkt und der Anzahl der Punkte ist, wenn die Anzahl in Richtung Unendlich geht:
+\[ h = \int_{}^{}gt=\frac{1}{2}gt^{2} \]
 
 Wenn man diese nun nach $t$ umstellt, erhält man:
 
-\[ t = \sqrt{\frac{2x}{g}} = \sqrt{\frac{2x}{9.81}} = \sqrt{0.204x} \]
+\[ t = \sqrt{\frac{2h}{g}} = \sqrt{\frac{2h}{9.81}} = \sqrt{0.204h} \]
 
 \subsection{Fazit}
 Die große Abweichung lässt sich vermutlich auf Messungenauigkeiten oder den Luftwiderstand zurückführen. Man muss den Versuch mit mehr unterschiedlichen Falldistanzen und in einem Vakuum erneut durchführen.
