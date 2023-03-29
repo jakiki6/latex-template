@@ -9,6 +9,7 @@
 \usepackage{url}
 \usepackage{seqsplit}
 \usepackage{hyperref}
+\usepackage[version=4]{mhchem}
 
 \graphicspath{{images/}}
 \setlength{\parindent}{0cm}
@@ -19,24 +20,57 @@
 \lhead{Jakob Kirsch}
 \rhead{\includegraphics[width=3cm]{logo}}
 
-% \title{}
-% \author{Jakob Kirsch}
-% \date{\parbox{\linewidth}{\centering%
-%   \today\endgraf\bigskip
-%   Fach: \endgraf\medskip
-%   Betreuer: \endgraf\medskip
-%}}
+\newcommand{\mpl}[1]{#1 \(\frac{mol}{l}\)}
 
 \begin{document}
+\section{Thema}
+Die Konzentration einer vorliegenden HCl-Lösung soll mithilfe einer Titration mit NaOH bestimmt werden.
 
-% \maketitle
-% \newpage
-% \tableofcontents
-% \newpage
+\section{Hypothese}
+Eine Hypothese lässt sich offensichtlich schlecht aufstellen. Trotzdem sollte die Konzentration zwischen \mpl{0} und \mpl{1.21} liegen, da ich nach meiner Recherche herausgefunden habe, dass normalerweise nicht mehr als 10\% HCl verwendet werden soll, was laut Sigma Aldrich etwa \mpl{1.21} entspricht.
 
-\blindtext
+\section{Sicherheitshinweise}
+Aufgrund der verwendeten Chemikalien (HCl, NaOH, Bromthymolblau) sollten entsprechende Schutzkleidung getragen werden, wobei die Konzentration der Natronlauge nur für die Augen schädlich ist.
+Bei der Befüllung der Bürette sollte diese auf den Boden gestellt werden. Zudem sollte die Bürette durch den Glastrichter befüllt werden, wobei dieser leicht angehoben werden sollte, um eventuelles Verschütten vorzubeugen.
 
-% \newpage
-% \bibliography{refs}
+\section{Material}
+\begin{itemize}
+    \item HCl (\mpl{?}) \(\ge\) 75ml
+    \item NaOH (\mpl{0.1}) \(\ge\) 900ml (maximal bei \mpl{1.21})
+    \item Bromthymolblau pH-Indikator \(\ge\) 9 Tropfen
+    \item Bürette
+    \item Glastrichter
+    \item Erlenmeyerkolbeni
+    \item kleinen Glastrichter (sollte in Bürette passen)
+    \item Vollpipette (25ml) + Peleusball
+    \item Abfallbehältniss \(\ge\) 1l
+\end{itemize}
+
+\section{Versuchsbeschreibung}
+Sicherheitshinweise lesen!
+
+Die Bürette wird zuerst mit NaOH gespült, um eventuelle Chemikalienreste zu eliminieren.
+Danach wird der Erlenmeyerkolben mit 25ml HCl befüllt und es werden 3 Tropfen des pH-Indikators hinzugegeben.
+Zudem wird die Bürette bis zur Markierung mit NaOH befüllt, wobei die Bürette vorher geschlossen werden muss.
+Danach wird der Erlenmeyerkolben unter die Bürette gestellt und diese wird vorsichtig geöffnet. Während das NaOH in den Kolben tropft, sollte dieser gut geschwenkt werden.
+Die Bürette wird sofort geschlossen, wenn sich die Lösung blau verfärbt, und es wird abgelesen, wie viel Milliliter NaOH benötigt wurden, um das HCl komplett zu neutralisieren.
+Das wird noch zweimal genauer mit niedrigerer Tropfgeschwindigkeit widerholt, da man den ungefähren Bereich schon kennt.
+Die Abfälle werden nach jedem Durchgang in das Abfallbehältniss gegeben.
+
+\section{Beobachtung}
+Bei dem ersten groben Druchgang wurden bei uns 23.7ml NaOH verwendet. Bei den 2 darauffolgenden feineren Druchgängen wurden einmal 23.9ml und einmal 24.1ml benötigt, wobei 24ml im Durchschnitt plausible erscheint.
+
+Überraschenderweise war der Farbumschwung sehr abrupt und trat häufiger auf, wenn man nicht schnell genug schwenkte.
+
+\section{Auswertung}
+Die Reaktion zwischen HCl und NaOH ist die folgende:
+\ce{HCl + NaOH <=> NaCl + H2O}
+
+Daraus lässt sich ableiten, dass das Verhältniss 1:1 ist, d.h. 1 Mol HCl reagiert mit genau 1 Mol NaOH.
+Daher wissen wir, dass die 25ml HCl die gleiche molare Menge haben wie die 24ml \mpl{0.1} NaOH.
+24ml \mpl{0.1} NaOH entsprechen 0.0024 Mol.
+Deswegen hat die Salzsäure eine Konzentration von 0.0024 Mol / 0.025l, also \mpl{0.096}.
+
+Aufgrund der Umstände (Schulchemie) ergeben \mpl{0.096} HCl durchaus Sinn.
 
 \end{document}
