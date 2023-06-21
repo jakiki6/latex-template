@@ -9,6 +9,8 @@
 \usepackage{url}
 \usepackage{seqsplit}
 \usepackage{hyperref}
+\usepackage{pgfplots}
+\usepackage{subfigure}
 
 \graphicspath{{images/}}
 \setlength{\parindent}{0cm}
@@ -19,24 +21,65 @@
 \lhead{Jakob Kirsch}
 \rhead{\includegraphics[width=3cm]{logo}}
 
-% \title{}
-% \author{Jakob Kirsch}
-% \date{\parbox{\linewidth}{\centering%
-%   \today\endgraf\bigskip
-%   Fach: \endgraf\medskip
-%   Betreuer: \endgraf\medskip
-%}}
-
 \begin{document}
 
-% \maketitle
-% \newpage
-% \tableofcontents
-% \newpage
+\section{Versuchsbeschreibung}
+Person A und Person B (dabei muss beachtet werden, dass beide etwa gleich groß sind) stehen circa 2,2m von einander entfernt vor einem, zu dem Ball hohen Kontrast habenden Hintergrund, und werfen sich den Ball waagerecht zueinander zu. Diese Aktion wird aufgenomme und später in der App Viana mit Hilfe einer Ballverfolgungssoftware und eines Koordinatensystems ausgewertet. Alternativ kann auch die Position des Balls in jedem Frame von Hand eingetragen werden, was bei uns der Fall war, da die Ballverfolgungssoftware aufgrund eines mangelnden Kontrasts nicht in der Lage war, den Ball adequat zu erkennen. Danach wird der Masßstab eingetragen, indem man die Größe einer Person als Referenz definiert. Die App berechnet daraufhin die rohen Koordinaten des Balls in jedem Frame und berechnet zudem weitere Werte
 
-\blindtext
+\section{Exportierte Messwerte und Auswertung}
 
-% \newpage
-% \bibliography{refs}
+\begin{figure}[!htb]
+\centering
+\subfigure{
+\begin{tikzpicture}
+\begin{axis}[title={Objekt 1 x-Koordinate (in cm)},xlabel={Zeit (in s)},ylabel={Objekt 1 x-Koordinate},grid style=dashed,ymin=-200,ymax=800]
+\addplot[color=blue,mark=square]
+coordinates {(0.03333,101.2)(0.06667,126.7)(0.1,148.6)(0.1333,169.6)(0.1667,194.4)(0.2,216.0)(0.2333,239.8)(0.2667,264.2)(0.3,285.3)(0.3333,306.1)};
+\end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\begin{axis}[title={Objekt 1 y-Koordinate (in cm)},xlabel={Zeit (in s)},ylabel={Objekt 1 y-Koordinate},grid style=dashed,ymin=-200,ymax=800]
+\addplot[color=blue,mark=square]
+coordinates {(0.03333,181.8)(0.06667,182.8)(0.1,184.4)(0.1333,187.2)(0.1667,186.8)(0.2,185.3)(0.2333,181.8)(0.2667,179.2)(0.3,174.3)(0.3333,168.1)};
+\end{axis}
+\end{tikzpicture}
+}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\subfigure{
+\begin{tikzpicture}
+\begin{axis}[title={Objekt 1 x-Geschwindigkeit (in cm pro s)},xlabel={Zeit (in s)},ylabel={Objekt 1 x-Geschwindigkeit},grid style=dashed,ymin=-200,ymax=800]
+\addplot[color=blue,mark=square]
+coordinates {(0.03333,641.7)(0.06667,765.0)(0.1,657.9)(0.1333,628.5)(0.1667,744.2)(0.2,647.7)(0.2333,714.0)(0.2667,734.3)(0.3,631.8)(0.3333,624.4)};
+\end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\begin{axis}[title={Objekt 1 y-Geschwindigkeit (in cm pro s)},xlabel={Zeit (in s)},ylabel={Objekt 1 y-Geschwindigkeit},grid style=dashed,ymin=-200,ymax=800]
+\addplot[color=blue,mark=square]
+coordinates {(0.03333,91.31)(0.06667,28.68)(0.1,48.35)(0.1333,85.21)(0.1667,-13.43)(0.2,-44.93)(0.2333,-103.3)(0.2667,-78.82)(0.3,-148.1)(0.3333,-185.3)};
+\end{axis}
+\end{tikzpicture}
+}
+\end{figure}
+
+\section{Deutung}
+Bei einem Blick auf die Position des Balls in Relation zur Zeit sieht man, dass das Wachstum der horizontalen Positon und damit auch die horizontale Geschwindigkeit gleich bleibt. Das ergibt auch Sinn, da die Schwerkraft als einzige Kraft unter Vernachlässigung des Luftwiderstandes auf den Ball wirkt und diese nur vertikal wirkt. Aufgrund unseres waagerechten, also horizontalen, Wurfes kann man nicht wirklich eine Aussage über das vertikale Verhalten treffen.
+
+Unsere Vermutung ist aber, dass fundamental 2 Kräfte auf den Ball einwirken. Einerseits wird er beim Abwurf mit einer horizontalen Geschwindigkeit nach oben versehen, erfährt andererseits aber auch eine konstante Beschleunigung nach unten.
+
+Daraus kann man die folgenden Formeln ableiten:
+
+\begin{equation}
+x = cos(\alpha) * v * t
+\end{equation}
+\begin{equation}
+y = -\frac{a}{2}t^{2} + sin(\alpha) * v * t
+\end{equation}
+
+Die Formeln beschreiben den Punkt $(x|y)$ an Zeitpunkt $t$, wobei $v$ die initiale Geschwindigkeit, $a$ die Beschleunigung nach unten und $\alpha$ den Winkel des Wurfes in Relation zur x-Achse.
 
 \end{document}
