@@ -20,7 +20,7 @@
 \rhead{\includegraphics[width=3cm]{logo}}
 
 \title{}
-\author{Jakob Kirsch}
+\author{Jakob Kirsch und Finn Decker}
 \date{\parbox{\linewidth}{\centering%
   \today\endgraf\bigskip
   Fach: IT\endgraf\medskip
@@ -86,9 +86,9 @@ Die Stromquelle ist eine 9V Batterie, damit man nicht bei einem falschen Aufbau 
   \hline
   Spannung [V] & 4.86 & 4.89 & 4.89 & 4.62 \\
   \hline
-  Stromstärke [mA] & 34.1 & 39.0 & 37.5 & ? \\
+  Stromstärke [mA] & 34.1 & 39.0 & 37.5 & 87.5 \\
   \hline
-  Leistung rechn. [mW] & 165.726 & 190.71 & 183.375 & ? \\
+  Leistung rechn. [mW] & 165.726 & 190.71 & 183.375 & 404.25 \\
   \hline
 \end{tabular}
 \end{center}
@@ -101,10 +101,11 @@ Die Leistung wurde errechnet, indem man die Spannung und die Stromstärke multip
 Bei jedem Aufbau schwanken die Werte sehr, wodurch man warten muss, bis diese sich halbwegs stabilisieren. Das liegt wahrscheinlich an verschiedenen Bauteilen, wie Kondensatoren.
 
 \section{Auswertung}
-Man kann also sehen, dass die rote LED mehr Leistung braucht als die blaue LED und generell jeder Verbraucher mehr verbraucht als der Leerlauf ohne sämtliche Gruppen.
+Man kann also sehen, dass die rote LED mehr Leistung braucht als die blaue LED und generell jeder Verbraucher mehr verbraucht als der Leerlauf ohne sämtliche Gruppen. Der Servo brauch am meisten.
 
 Testweise haben wir auch den ATmega328p in den "Power-down" deep sleep Modus gebracht, um den Stromverbrauch von ihm zu senken. Wir konnten aber keine messbare Änderung in der Leistung sehen, die über das normale Schwanken hinausging, was darauf hindeutet, dass der ATmega328p im Betrieb ohne jegliche andere Hardware sehr viel effizienter sein sollte.
 
 Als grobe Schätzung kann eine Autobatterie 1kWh speichern, also 1000 Stunden lang 1W abgeben. Somit könnte ein Arduino UNO im Leerlauf mehr als 250 Tage am Stück laufen.
+Bei einer 9V Batterie mit 5.4 Wh würde der Aufbau mit Servo nicht einmal 14h laufen, ohne ihn aber auch nur 32h.
 
 \end{document}
