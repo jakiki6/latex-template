@@ -16,27 +16,50 @@
 \geometry{letterpaper, margin=1in}
 \pagestyle{fancy}
 
-\lhead{Jakob Kirsch}
+\lhead{Jakob Kirsch und Felix Warschburger}
 \rhead{\includegraphics[width=3cm]{logo}}
 
-% \title{}
-% \author{Jakob Kirsch}
-% \date{\parbox{\linewidth}{\centering%
-%   \today\endgraf\bigskip
-%   Fach: \endgraf\medskip
-%   Betreuer: \endgraf\medskip
-%}}
+\title{}
+\author{Jakob Kirsch und Felix Warschburger}
+\date{\parbox{\linewidth}{\centering%
+  \today\endgraf\bigskip
+  Fach: InVer\endgraf\medskip
+  Betreuer: Herr Maier\endgraf\medskip
+}}
 
 \begin{document}
 
-% \maketitle
-% \newpage
-% \tableofcontents
-% \newpage
+\maketitle
+\newpage
+\tableofcontents
+\newpage
 
-\blindtext
+\section{Formuliertes Ziel}
+Unser ursprüngliches Ziel war es, eine App zu entwickeln, bei der man durch Berührung Partikel beeinflussen kann, wie als wären diese durch Gravitation angezogen. Die Idee kam daher, dass Felix eine Planetensimulation programmiert hat und diese ganz interessant aussah. Wir haben während der Entwicklung unser Ziel erweitert, was wir in einem zusätzlichen Abschnitt erläutern werden.
 
-% \newpage
-% \bibliography{refs}
+\section{Benutzte Tools}
+\begin{itemize}
+    \item Android Studio
+    \item Android NDK (C++)
+\end{itemize}
+
+\section{Timeline der Entwicklung}
+\begin{itemize}
+    \item Android App Projekt erstellt
+    \item Schwarzes Canvas hinzugefügt
+    \item Code hinzugefügt, mit dem man einzelne Partikel in weiß rendern kann
+    \item Proof-of-concept Code in Java geschrieben, welcher alle nötigen Berechnungen macht, damit sich die Partikel bewegen
+    \begin{itemize} \item Problem: Java ist super langsam, der Code laggt mit mehr als 1000 Partikeln. Wir wollen aber eher 100.000 bis 1.000.000 Partikel \end{itemize}
+    \item Logische Schlussfolgerung: performance-kritischen Teil in C++ neuschreiben.
+    \begin{itemize} \item Hier fangen die Probleme an \end{itemize}
+    \item Problem: wenn man einen ByteBuffer an Floats übergibt, kommen auf der C++-Seite sehr komische Zahlen an. Lösung: ein Float-Array übergeben und dann die Werte so auslesen
+    \item Problem: das gleiche passiert mit ArrayList<Float>, womit wir die Berührungspunkte übergeben Lösung: auch Float-Array übergeben
+    \item Problem: Rendercode ist viel zu langsam (hängt bei mehr als 10.000 Partikel) Lösung: Partikel werden gerendert, indem man den Pixel setzt statt einen Kreis mit Durchmesser 1 zu rendern
+    \item Problem: es ist immernoch zu langsam Lösung: auch wieder in C++ neuschreiben.
+    \item Problem: Bug in Android: wenn man \texttt{env->NewDirectByteBuffer()} benutzt, um einen ByteBuffer in C++ zu erzeugen, und man diesen dann zurückgibt, erscheint es auf der Java-Seite so, als ob dieser ByteBuffer eine Kapazität von 0 hat. Lösung: Wir übergeben einen bereits allokierten ByteBuffer als Argument.
+    \item Einstellungen hinzufügen (z.B. Partikelmenge)
+    \item Zwei neue Activities hinzugefügt: Grid und Ant
+
+\end{itemize}
 
 \end{document}
