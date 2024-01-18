@@ -62,4 +62,45 @@ Unser ursprüngliches Ziel war es, eine App zu entwickeln, bei der man durch Ber
 
 \end{itemize}
 
+\section{Aktuelle Features}
+Beim öffnen der App sieht man die folgenden 4 Optionen.
+
+\subsection{Settings}
+Hier kann Einstellungen ändern.
+
+\subsection{Particles}
+Hier wird der Bildschirm mit einer einstellbaren Menge an Partikeln gefüllt. Diese kann man dann beeinflussen, indem man den Bildschirm berührt, wodurch diese gemäß der Gesetze der Gravitation an die Berührungspunkte angezogen werden.
+Einstellungen: Partikelmenge (hängt von der Leistung des Geräts ab).
+
+\subsection{Grid}
+Hier kann man ein Schachbrettmuster generieren, wobei die einzelnen Felder eine konfigurierbare Größe haben. Wenn man nun mit einem zweiten Gerät die Kamera auf den Bildschirm richtet, bildet sich ein sogenanntes Moiré-Muster. Alternativ kann man auch einen Screenshot machen oder in die Übersicht aller geöffneten Apps gehen, da in beiden Fällen das Bild gedownscaled wird und sich Muster bilden.
+Einstellungen: Größe der Felder
+
+\subsection{Ant}
+Hier kann man den Zellulären Automat namens "Ameise" (engl.: Langton's ant) beobachten. Er funktioniert, indem man eine konfigurierbare Menge an "Ameisen" zufällig auf eine schwarz-weiße Oberfläche setzt. In jedem Schritt guckt jede Ameise auf die Farbe in dem aktuellen Feld unter sich und dreht sich bei Weiß um 90 Grad nach rechts und bei Schwarz um 90 Grad nach links. Danach wechselt sie die Farbe des Feldes von Schwarz zu Weiß oder umgekehrt. Danach geht sie einen Schritt in Blickrichtung. Diese einfachen Regeln erzeugen ein interessantes Muster. Nach einer gewissen Zeit ist der Bildschirm komplett befüllt und es sieht so aus, als ob Ameisen auf dem Bildschirm umherlaufen.
+Einstellungen: Menge der Ameisen und Schritte pro Frame.
+
+\section{Codestruktur}
+Es gibt 6 Klassen:
+\begin{itemize}
+    \item AntActivity: Activity für Langton's ant
+    \item GridActivity: Activity für den Moiré-Effekt
+    \item MainActivity: Activity, die beim Öffnen angezeigt wird
+    \item Native: JNI bindings für den C++ Code
+    \item ParticleActivity: Activity für die Partikelsimulation
+    \item SettingsActivity: Activity für die Einstellungen
+\end{itemize}
+
+und eine C++ Datei namens "native.cpp", welche den C++ Code enthält.
+
+\section{Reflektion}
+Das haben wir gelernt:
+\begin{itemize}
+    \item Java ist sehr sehr sehr langsam
+    \item C++ und Java zu verbinden ist sehr aufwendig aufgrund von Bugs in JNI auf Android
+\end{itemize}
+
+Leider konnten wir keine Bilder der App hinzufügen, da diese mit pixelpräzision rendert und alle Bilder die auch nur irgendwie komprimiert werden sehr schlimm aussehen.
+Das Design der App sollte es erlauben, noch mehr Features zu verbauen.
+
 \end{document}
