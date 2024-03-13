@@ -21,7 +21,7 @@
 
 % \title{}
 % \author{Jakob Kirsch}
-% \date{\parbox{\linewidth}{\centering%
+% \date{\parbox{\linewidth}{entering%
 %   \today\endgraf\bigskip
 %   Fach: \endgraf\medskip
 %   Betreuer: \endgraf\medskip
@@ -29,14 +29,20 @@
 
 \begin{document}
 
-% \maketitle
-% \newpage
-% \tableofcontents
-% \newpage
+\section{Formula}
+\[ \pi = 732 \arctan \frac{1}{239} + 128 \arctan \frac{1}{1023} - 272 \arctan \frac{1}{5832} + 48 \arctan \frac{1}{110443} - 48 \arctan \frac{1}{4841182} - 400 \arctan \frac{1}{6826318} \]
 
-\blindtext
+\[ \arctan \frac{1}{x} = \frac{1}{x} - \frac{1}{3x^{3}} + \frac{1}{5x^{5}} - \frac{1}{7x^{7}} + \frac{1}{9x^{9}} - \frac{1}{11x^{11}} + ... \]
 
-% \newpage
-% \bibliography{refs}
+\section{Cutoffs}
+\begin{tabular}{ c|c|c|c|c|c|c }
+    log10 x & 239 & 1023 & 5832 & 110443 & 4841182 & 6826318 \\
+    \hline
+    1 & 5 & 4 & 4 & 3 & 3 & 3 \\
+    2 & 24 & 19 & 16 & 12 & 10 & 10 \\
+    3 & 213 & 169 & 135 & 102 & 77 & 76 \\
+    4 & 2105 & 1664 & 1330 & 994 & 750 & 734 \\
+    5 & 21025 & 16614 & 13280 & 9917 & 7482 & 7319
+\end{tabular}
 
 \end{document}
