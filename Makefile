@@ -6,7 +6,7 @@ view: main.pdf
 main.pdf: main.tex
 	pdflatex $<
 	# bibtex $(<:.tex=)
-	# pdflatex $<
+	pdflatex $<
 	# pdflatex $<
 	zip -l main.zip main.tex refs.bib gerplain.bst images/* code/* Makefile
 	pdfzip -p main.pdf -z main.zip main.pdf
