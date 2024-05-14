@@ -9,6 +9,7 @@
 \usepackage{url}
 \usepackage{seqsplit}
 \usepackage{hyperref}
+\usepackage{wrapfig}
 
 \graphicspath{{images/}}
 \setlength{\parindent}{0cm}
@@ -21,11 +22,12 @@
 
 \begin{document}
 
-\begin{center}
-    \includegraphics[width=3cm]{milch}
-\end{center}
-
 \section{Generelle Informationen}
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+    \centering
+    \includegraphics[width=3cm]{milch}
+\end{wrapfigure}
 
 Name: Milchsäure
 
@@ -45,16 +47,20 @@ Konjugierte Base: Lactat
 
 CAS: 50-21-5
 
+E-Nummer: E270
+
+SMILES: CC(O)C(=O)O
+
 \section{Eigenschaften und Verwendung}
 Milchsäure wird als Zusatz für Nahrung verwendet, da sie auch natürlich in Sauermilchprodukten wie Joghurt vorkommt. Da es sich um eine Säure handelt, wird sie auch als Säurungsmittel und als Konservierungsstoff genutzt. Zudem wird sie bei der Bierherstellung genutzt, um den pH-Wert des Biers zu senken.
 
 Milchsäure ist zudem der Monomer (kleinster Baustein eines Polymers) der Polylactide. Ein Beispiel für diese Polymere ist PLA (eng.: poly lactic acid = Polymilchsäure), welcher durch die lineare Kondensation (Abgabe von Wasser) von einzelnen Milchsäuremolekülen entsteht:
 
 \begin{center}
-    \includegraphics[width=3cm]{pla}
+    \includegraphics[width=5cm]{pla}
 \end{center}
 
-PLA ist ein erneuerbarer Plastik, da Milchsäure natürlich produziert werden kann. Zudem ist er biologisch abbaubar. Anwendung findet er z.B. im 3D-Druck als Filament, also der \"Baustoff\", welcher der 3D-Drucker verwendet. PLA wird in der Zukunft immer mehr Relevanz bekommen, da man aus diesem erneuerbaren Plastik in vielen Bereichen von fossilen Kunststoffen, wie z.B. Polyethylen, einsetzen kann.
+PLA ist ein erneuerbarer Plastik, da Milchsäure natürlich produziert werden kann. Zudem ist er biologisch abbaubar. Anwendung findet er z.B. im 3D-Druck als Filament, also der Baustoff, welcher der 3D-Drucker verwendet. PLA wird in der Zukunft immer mehr Relevanz bekommen, da man aus diesem erneuerbaren Plastik in vielen Bereichen von fossilen Kunststoffen, wie z.B. Polyethylen, einsetzen kann.
 
 \section{Vorkommen und Gewinnung}
 Milchsäure ist ein alternatives Endprodukt der alkoholischen Gärung. Statt Pyruvat zu decarboxylieren, wird die Ketongruppe des Pyruvats mit NADH zu einer Hydroxylgruppe reduziert:
@@ -63,8 +69,24 @@ Milchsäure ist ein alternatives Endprodukt der alkoholischen Gärung. Statt Pyr
     \includegraphics[width=3cm]{pyruvate}
 \end{center}
 
-Dieser Prozess findet bei der Milchsäuregärung statt und führt dazu, dass z.B. alte Milch \"sauer\" wird. Unsere Muskeln produzieren unter hoher Belastung durch die anaerobe Respiration auch Milchsäure (um genau zu sein den Dextroenantiomer). Eine übermäßige Konzentration von Lactat im Blut führt zu der sogenannten Laktatazidose, wodurch der pH-Wert des Bluts zu weit sinkt, woran man sterben kann.
+Dieser Prozess findet bei der Milchsäuregärung statt und führt dazu, dass z.B. alte Milch sauer wird. Unsere Muskeln produzieren unter hoher Belastung durch die anaerobe Respiration auch Milchsäure (um genau zu sein den Dextroenantiomer). Eine übermäßige Konzentration von Lactat im Blut führt zu der sogenannten Laktatazidose, wodurch der pH-Wert des Bluts zu weit sinkt, woran man sterben kann.
 
-Die Milchsäuregärung wird bei der Fermentierung von Glucose oder anderen Kohlenhydraten verwendet, um 70\% - 90\% der industriell verwerteten Milchsäure zu produzieren. Die primär genutzten Mikroben stammen aus der Lactobacillaceae Familie. Alternativ kann auch Acetaldehyd, welches aus fossilen Brennstoffen stammt, mit Cyanwasserstoff zu Acetaldehydcyanhydrin umgewandelt werden, welches mit Salzsäure zu Milchsäure und Ammoniumchlorid umgewandelt werden kann. Aufgrund der offensichtlichen Nachteile (benutzten eines chemischen Kampfstoffes und eines Karzinogens) und ökonomischen Gründen, wird diese Route wenig genutzt.
+Die Milchsäuregärung wird bei der Fermentierung von Glucose oder anderen Kohlenhydraten verwendet, um 70\% - 90\% der industriell verwerteten Milchsäure zu produzieren. Die primär genutzten Mikroben stammen aus der Lactobacillaceae Familie. Alternativ kann auch Acetaldehyd, welches aus fossilen Brennstoffen stammt, mit Cyanwasserstoff zu Acetaldehydcyanhydrin umgewandelt werden, welches mit Salzsäure zu Milchsäure und Ammoniumchlorid umgewandelt werden kann:
+
+\begin{center}
+    \includegraphics[width=8cm]{cyan}
+\end{center}
+
+Aufgrund der offensichtlichen Nachteile (benutzten eines chemischen Kampfstoffes und eines Karzinogens) und ökonomischen Gründen, wird diese Route wenig genutzt.
+
+\section{Quellen}
+\begin{itemize}
+    \item https://de.wikipedia.org/wiki/Milchs\%C3\%A4ure
+    \item https://en.wikipedia.org/wiki/Lactic\_acid
+    \item https://pubchem.ncbi.nlm.nih.gov/compound/612
+    \item https://commonchemistry.cas.org/detail?cas\_rn=50-21-5
+    \item https://www.webmd.com/fitness-exercise/exercise-and-lactic-acidosis
+    \item https://commons.wikimedia.org/w/index.php
+\end{itemize}
 
 \end{document}
