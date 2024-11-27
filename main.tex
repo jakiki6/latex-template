@@ -9,6 +9,7 @@
 \usepackage{url}
 \usepackage{seqsplit}
 \usepackage{hyperref}
+\usepackage{listings}
 
 \graphicspath{{images/}}
 \setlength{\parindent}{0cm}
@@ -19,24 +20,206 @@
 \lhead{Jakob Kirsch}
 \rhead{\includegraphics[width=3cm]{logo}}
 
-% \title{}
-% \author{Jakob Kirsch}
-% \date{\parbox{\linewidth}{\centering%
-%   \today\endgraf\bigskip
-%   Fach: \endgraf\medskip
-%   Betreuer: \endgraf\medskip
-%}}
-
 \begin{document}
 
-% \maketitle
-% \newpage
-% \tableofcontents
-% \newpage
+\section{Arduino Seite}
+Um unsere Verbindung zu testen, bauen wir auf der Seite des Arduinos eine einfache Verbindung auf, die die Daten zwischen dem HM-10 und der Serial-Verbindung austauschen.
 
-\blindtext
+Dazu verbinden wir GND mit GND, VCC mit 5V, TX mit Pin 3 und RX mit Pin 4.
 
-% \newpage
-% \bibliography{refs}
+Als Code flashen wir folgendes auf den Arduino UNO:
+
+\begin{lstlisting}
+#include <SoftwareSerial.h>
+
+SoftwareSerial ss(3, 4);
+
+void setup() {
+  Serial.begin(9600);
+  ss.begin(9600);
+}
+
+void loop() {
+  while (ss.available()) {
+    char c = ss.read();
+    Serial.write(c);
+  }
+
+  while (Serial.available()) {
+    char c = Serial.read();
+    Serial.write(c);
+    ss.write(c);
+  }
+}
+\end{lstlisting}
+
+Dieser Code reicht Daten zwischen dem HM-10 und der Serial-Verbindung hin und her. Dann können wir im Serial-Monitor unserer Arduino IDE sehen, was ankommt, und können auch selbst Daten senden.
+
+\section{Android}
+
+Den fertigen Code kann man \href{https://github.com/jakiki6/blebox}{hier} sehen.
+
+Um auf Android Bluetooth LE (von hier an als BLE abgekürzt) benutzen zu können, muss man erstmal nach Rechten fragen.
+
+Also geht man zu der AndroidManifest.xml Datei und fügt die folgenden Zeilen über dem application-Tag ein:
+\begin{lstlisting}
+<uses-permission
+        android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30"
+        android:required="true" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30"
+        android:required="true" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_SCAN"
+        android:required="true" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADVERTISE"
+        android:required="true" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_CONNECT"
+        android:required="true" />
+    <uses-permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION"
+        android:required="true" />
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:required="true" />
+\end{lstlisting}
+
+Wenn wir das getan haben, können wir uns der MainActivity.java widmen.
+
+Als erstes müssen wir in der onCreate Methode überprüfen, ob das Gerät überhaupt BLE kann:
+\begin{lstlisting}
+if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+    Toast.makeText(this, R.string.ble_unsupported, Toast.LENGTH_SHORT).show();
+    finish();
+}
+\end{lstlisting}
+
+Als nächstes müssen wir uns eine Instanz des BluetoothManager holen. Dafür fügen wir ein paar neue Variable in der Klasse hinzu:
+\begin{lstlisting}
+BluetoothManager bluetoothManager;
+BluetoothLeScanner bluetoothLeScanner;
+\end{lstlisting}
+
+In der onCreate Methode fügen wir dann das hinzu, um eine Instanz zu bekommen:
+\begin{lstlisting}
+bluetoothManager = (BluetoothManager) getBaseContext().getSystemService(Context.BLUETOOTH_SERVICE);
+\end{lstlisting}
+
+Das Layout für unsere MainActivity wird ungefähr so aussehen:
+\begin{lstlisting}
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/switch_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/main_scan"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/start_scan"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/main_select"
+        app:layout_constraintTop_toTopOf="@+id/main_select"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/main_select"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/select_device"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/main_checkbox"
+        app:layout_constraintStart_toEndOf="@+id/main_scan" />
+
+    <CheckBox
+        android:id="@+id/main_checkbox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/include_unnamed"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/main_select"
+        app:layout_constraintStart_toEndOf="@+id/main_select" />
+
+    <TextView
+        android:id="@+id/main_log_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/main_device_spinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/main_device_spinner"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/main_scan"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_log_view" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+\end{lstlisting}
+
+Zusammenfassend enthält das Layout:
+\begin{itemize}
+  \item Button, der den Scan startet
+  \item Button, der die Geräteauswahl bestätigt
+  \item CheckBox, die angibt, ob unbenannte Geräte auch angezeigt werden sollen
+  \item TextView, der die gefundenen Geräte listet
+  \item Spinner, in dem man das Gerät auswählen kann
+\end{itemize}
+
+Also fügen wir oben in der Klasse wieder Variablen für die Views hinzu:
+\begin{lstlisting}
+Button bscan, select;
+TextView logView;
+Spinner deviceSelectionSpinner;
+CheckBox includeUnnamed;
+\end{lstlisting}
+
+In der onCreate Methode holen wir uns wieder Instanzen davon und fügen OnClickListener hinzu:
+\begin{lstlisting}
+bscan = findViewById(R.id.main_scan);
+bscan.setOnClickListener(this);
+
+select = findViewById(R.id.main_select);
+select.setOnClickListener(this);
+
+logView = findViewById(R.id.main_log_view);
+logView.setMovementMethod(new ScrollingMovementMethod());
+
+deviceSelectionSpinner = findViewById(R.id.main_device_spinner);
+
+includeUnnamed = findViewById(R.id.main_checkbox);
+\end{lstlisting}
+
+Diese Methode beenden wir mit einem Aufruf zu der ensurePermissions Methode, welche so definiert ist:
+\begin{lstlisting}
+public boolean ensurePermissions() {
+    String[] perms = Build.VERSION.SDK_INT >= 31 ? new String[]{android.Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION} : new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+
+    ActivityCompat.requestPermissions(this, perms, 0);
+    for (String perm : perms) {
+        if (ActivityCompat.checkSelfPermission(this, perm) != PackageManager.PERMISSION_GRANTED) return false;
+    }
+
+    return true;
+}
+\end{lstlisting}
+
+Diese Methode fragt abhängig von der Android-Version nach den entsprechenden Berechtigungen und gibt zurück, ob diese erfüllt sind.
+
+
 
 \end{document}
