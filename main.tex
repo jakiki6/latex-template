@@ -90,6 +90,8 @@ Also geht man zu der AndroidManifest.xml Datei und fügt die folgenden Zeilen ü
 
 Wenn wir das getan haben, können wir uns der MainActivity.java widmen.
 
+\subsection{MainActivity}
+
 Als erstes müssen wir in der onCreate Methode überprüfen, ob das Gerät überhaupt BLE kann:
 \begin{lstlisting}
 if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
@@ -220,6 +222,178 @@ public boolean ensurePermissions() {
 
 Diese Methode fragt abhängig von der Android-Version nach den entsprechenden Berechtigungen und gibt zurück, ob diese erfüllt sind.
 
+Da wir vorher mit setOnClickListener die Instanz der Klasse als Listener festgesetzt haben, muss unsere Klasse View.OnClickListener implementieren.
 
+Dazu erweitern wir unsere Klassendefinition zu:
+\begin{lstlisting}
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+   ...
+}
+\end{lstlisting}
+
+und fügen eine neue Methode ein:
+\begin{lstlisting}
+@Override
+public void onClick(View v) {
+    if (ensurePermissions()) {
+        if (v.getId() == bscan.getId()) {
+            toggleScan();
+        } else if (v.getId() == select.getId()) {
+            if (deviceSelectionSpinner.getSelectedItemPosition() != -1) {
+                String[] uuidParts = ((String) deviceSelectionSpinner.getSelectedItem()).split(" ");
+                String uuid = uuidParts[uuidParts.length - 1];
+
+                BluetoothDevice dev = devices.get(uuid);
+                ActionMenuActivity.dev = dev;
+                Intent intent = new Intent(this, ActionMenuActivity.class);
+                startActivity(intent);
+            }
+        }
+    }
+
+    bscan.setText(scanning ? R.string.stop_scan : R.string.start_scan);
+    redraw();
+}
+\end{lstlisting}
+
+Der Code überprüft erst, ob er die entsprechenden Rechte hat. Wenn das der Fall ist, guckt er, welcher Button gedrückt wurde. Wenn es der Scan-Button ist, wird toggleScan aufgerufen. Wenn es der Select-Button ist, guckt der Code, welches Gerät im Spinner ausgewählt ist, extrahiert daraus die UUID des Geräts (praktisch die Adresse), holt sich eine Instanz dieses Geräts und startet eine andere Activity, die dann mit dem Gerät interagieren kann.
+
+Am Ende der Methode wird der Text auf dem Scan-Button aktualisiert und das TextView neu befüllt.
+
+Also müssen wir noch weiter Funktionen und Variablen hinzufügen:
+\begin{lstlisting}
+HashMap<String, BluetoothDevice> devices;
+
+ScanCallback callback = new ScanCallback() {
+        @SuppressLint("MissingPermission")
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+            super.onScanResult(callbackType, result);
+
+            BluetoothDevice dev = result.getDevice();
+            if (dev.getName() == null && !includeUnnamed.isChecked()) return;
+            devices.put(dev.getAddress(), dev);
+
+            redraw();
+        }
+    };
+
+boolean scanning = false;
+
+@SuppressLint("MissingPermission")
+public void redraw() {
+    if (devices == null) return;
+
+    String text = devices.size() == 1 ? getResources().getString(R.string.log_1_device) : devices.size() + " " + getResources().getString(R.string.log_n_devices);
+    for (String addr : devices.keySet()) {
+        text += addr + (devices.get(addr).getName() == null ? "" : ": " + devices.get(addr).getName()) + "\n";
+    }
+    logView.setText(text);
+
+    String puuid = (String) deviceSelectionSpinner.getSelectedItem();
+
+    ArrayAdapter<String> adapter = new ArrayAdapter<>(getBaseContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, devices.keySet().stream().map(uuid -> (devices.get(uuid).getName() == null ? "" : devices.get(uuid).getName() + " ") + uuid).collect(Collectors.toSet()).toArray(new String[]{}));
+    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    deviceSelectionSpinner.setAdapter(adapter);
+
+    if (puuid != null) {
+        for (int i = 0; i < devices.size(); i++) {
+            if (puuid.equals(deviceSelectionSpinner.getItemAtPosition(i))) deviceSelectionSpinner.setSelection(i);
+        }
+    }
+}
+
+@SuppressLint("MissingPermission")
+public void toggleScan() {
+    if (!ensurePermissions()) return;
+
+    if (scanning) {
+        scanning = false;
+
+        bluetoothLeScanner.stopScan(callback);
+        return;
+    }
+
+    bluetoothLeScanner = bluetoothManager.getAdapter().getBluetoothLeScanner();
+
+    if (bluetoothLeScanner == null) {
+        Toast.makeText(this, R.string.no_bt_scanner, Toast.LENGTH_SHORT).show();
+        return;
+    }
+
+    scanning = true;
+    ScanSettings settings = new ScanSettings.Builder().setScanMode(ScanSettings.MATCH_MODE_AGGRESSIVE).build();
+    devices = new HashMap<>();
+    bluetoothLeScanner.startScan(new ArrayList<>(), settings, callback);
+}
+\end{lstlisting}
+
+Die toggleScan Methode holt sich eine Instanz eines BluetoothLeScanner und startet einen Scan mit diesem. Als callback definieren wir ein ScanCallback, welches die Adressen in einer Liste speichert und die redraw Methode aufruft. Die redraw Methode befüllt das Textview und den Spinner mit der Liste der Geräten.
+
+Damit haben wir erfolgreich eine Activity erstellt, mit der man eine Instanz eines BluetoothDevice bekommen kann.
+
+Dieses wird dann an eine neue Aktivität weitergereicht, in der wir uns mit diesem Verbinden können.
+
+\subsection{Andere Activity}
+In der neuen Activity definieren wir neue Variablen:
+\begin{lstlisting}
+BluetoothGatt gatt;
+BluetoothGattCharacteristic characteristic;
+
+public static final UUID SERVICE_UUID = UUID.fromString("0000ffe0-0000-1000-8000-00805f9b34fb");
+public static final UUID CHARACTERISTIC_UUID = UUID.fromString("0000ffe1-0000-1000-8000-00805f9b34fb");
+\end{lstlisting}
+
+GATT ist ein Akronym für \textbf{G}eneric \textbf{ATT}ribute profile.
+
+In der Welt von BLE hat ein Gerät ein oder mehrere Services, welche ein oder mehrere Characteristics haben. Characteristics sind wie Variablen, die man auslesen und beschreiben kann. Beide werden durch UUIDs (\textbf{U}niversally \textbf{U}nique \textbf{ID}entifier) identifiziert.
+
+Im Falle des HM-10 ist die UUID unseres Services 0000ffe0-0000-1000-8000-00805f9b34fb und die der Characteristic 0000ffe1-0000-1000-8000-00805f9b34fb.
+
+Um darauf zuzugreifen, müssen wir in der onCreate Methode folgendes hinzufügen:
+
+\begin{lstlisting}
+gatt =  dev.connectGatt(this, true, new BluetoothGattCallback() {
+    @Override
+    public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+        super.onConnectionStateChange(gatt, status, newState);
+
+        switch (newState) {
+            case BluetoothGatt.STATE_CONNECTED:
+                gatt.discoverServices();
+                break;
+            case BluetoothGatt.STATE_DISCONNECTED:
+                finish();
+        }
+    }
+
+    @Override
+    public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+        super.onServicesDiscovered(gatt, status);
+
+        if (status == BluetoothGatt.GATT_SUCCESS) {
+            BluetoothGattService service =  gatt.getService(SERVICE_UUID);
+            if (service == null) return;
+
+            characteristic =  service.getCharacteristic(CHARACTERISTIC_UUID);
+        }
+    }
+});
+
+gatt.connect();
+\end{lstlisting}
+
+Wir verbinden uns mit dem Gerät und registrieren ein Callback. Wenn sich das Gerät erfolgreich verbindet, scannen wir nach Services. Wenn es sich trennt, beenden wir die Activity. Wenn alle Services gefunden wurden, suchen wir nach dem Service mit unserer UUID und die Characteristic mit der entsprechenden UUID.
+
+Testweise habe ich einen Switch hinzugefügt, der den folgenden Code im Listener hat:
+\begin{lstlisting}
+if (characteristic == null) {
+    Toast.makeText(this, R.string.service_not_connected, Toast.LENGTH_SHORT).show();
+    return;
+}
+
+characteristic.setValue(isChecked ? "1" : "0");
+gatt.writeCharacteristic(characteristic);
+\end{lstlisting}
 
 \end{document}
