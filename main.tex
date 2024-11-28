@@ -11,6 +11,8 @@
 \usepackage{hyperref}
 \usepackage{listings}
 
+\lstset{language=Java}
+
 \graphicspath{{images/}}
 \setlength{\parindent}{0cm}
 \bibliographystyle{gerplain}
@@ -395,5 +397,31 @@ if (characteristic == null) {
 characteristic.setValue(isChecked ? "1" : "0");
 gatt.writeCharacteristic(characteristic);
 \end{lstlisting}
+
+Wenn die Characteristic gefunden wurde, schreibt es abhängig vom Zustand des Switches 1 oder 0. Wenn man sich den Serial Monitor anguckt, wird man also 1 oder 0 sehen.
+
+Prinzipiell kann man von hier aus tun, was man will. Wenn man Daten von dem HM-10 empfangen will, kann man in dem Gatt Callback folgendes hinzufügen:
+\begin{lstlisting}
+@Override
+public void onCharacteristicChanged(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] value) {
+    super.onCharacteristicChanged(gatt, characteristic, value);
+    
+    if (characteristic.getService().getUuid().equals(SERVICE_UUID) && characteristic.getUuid().equals(CHARACTERISTIC_UUID)) {
+        Toast.makeText(ArduinoSwitchActivity.this, "Text: " + new String(value, StandardCharsets.UTF_8), Toast.LENGTH_SHORT).show();
+    }
+}
+\end{lstlisting}
+
+Dieser Code gibt als Toast aus, was er von dem HM-10 empfängt, also das, was man im Serial Monitor schreibt.
+
+Somit hat man eine bidirektionale Kommunikation zwischen dem Handy und dem HM-10.
+
+\section{HM-10 Umbenennen}
+Wenn der HM-10 \textbf{nicht} mit einem Gerät verbunden ist, kann man im Serial Monitor die Zeilenendungen auf NL und CR umstellen und den folgenden Befehl senden:
+\begin{lstlisting}
+AT+NAMEtest1234
+\end{lstlisting}
+
+Dadurch wird der Chip zu test1234 umbenannt. Diese Art von Befehlen nennt man auch Hayes-Befehle, welche viele Modems unterstützen.
 
 \end{document}
