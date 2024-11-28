@@ -8,7 +8,7 @@ main.pdf: main.tex
 	# bibtex $(<:.tex=)
 	# pdflatex $<
 	# pdflatex $<
-	zip -l main.zip main.tex refs.bib gerplain.bst images/* code/* Makefile
+	zip -r -9 -l main.zip main.tex refs.bib gerplain.bst images/* code/* Makefile
 	pdfzip -p main.pdf -z main.zip main.pdf
 	rm main.zip
 

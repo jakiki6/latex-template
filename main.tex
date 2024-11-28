@@ -11,7 +11,11 @@
 \usepackage{hyperref}
 \usepackage{listings}
 
-\lstset{language=Java}
+\lstset{
+  language=Java,
+  breaklines=true,
+  breakatwhitespace=true
+}
 
 \graphicspath{{images/}}
 \setlength{\parindent}{0cm}
@@ -423,5 +427,9 @@ AT+NAMEtest1234
 \end{lstlisting}
 
 Dadurch wird der Chip zu test1234 umbenannt. Diese Art von Befehlen nennt man auch Hayes-Befehle, welche viele Modems unterstützen.
+
+\section{Notizen}
+Diese Datei ist ein Polyglott. Wenn man sie zu einer .zip Datei umbenennt, kann man diese extrahieren. Darin enthalten ist der Code für diese Datei und auch der Code der App.
+Wenn man diese Datei extrahiert hat, kann man Android Studio öffnen und das Projekt unter code/blebox importieren.
 
 \end{document}
